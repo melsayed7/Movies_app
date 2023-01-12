@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/screen/home_screen/home_screen.dart';
+import 'package:movie_app/layout/home_layout.dart';
 import 'package:movie_app/shared/style/my_theme.dart';
 
 void main() {
@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        HomeScreen.routeName: (context) => HomeScreen(),
+        HomeLayout.routeName: (context) => HomeLayout(),
       },
-      initialRoute: HomeScreen.routeName,
+      initialRoute: HomeLayout.routeName,
       theme: MyTheme.lightTheme,
     );
   }
