@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:movie_app/model/MovieDetailModel.dart';
 import 'package:movie_app/model/PopularMovie.dart';
+import 'package:movie_app/model/SearchMovieModel.dart';
 import 'package:movie_app/model/SimilarMovie.dart';
 import 'package:movie_app/model/TopRatedMovie.dart';
 
@@ -68,5 +69,20 @@ class ApiManager {
       rethrow;
     }
   }
-}
 
+  //https://api.themoviedb.org/3/search/movie?api_key=58b29b46048441216fa7c3562cb5eba9&language=en-US&query=batman&page=1&include_adult=false
+
+  static Future<SearchMovieModel> searchMovie(String query) async {
+    var url = Uri.https(
+        baseUrl, '/3/search/movie', {'api_key': apiKey, 'query': query});
+    try {
+      var response = await http.get(url);
+      var bodyString = response.body;
+      var json = jsonDecode(bodyString);
+      var searchMovieModel = SearchMovieModel.fromJson(json);
+      return searchMovieModel;
+    } catch (error) {
+      rethrow;
+    }
+  }
+}
