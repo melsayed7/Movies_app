@@ -5,6 +5,8 @@ import 'package:movie_app/model/PopularMovie.dart';
 import 'package:movie_app/screen/home_screen/popular_widget/popular_item.dart';
 import 'package:movie_app/shared/style/myColor.dart';
 
+import '../../movie_details/movie_details.dart';
+
 class PopularWidget extends StatelessWidget {
   const PopularWidget({Key? key}) : super(key: key);
 
@@ -44,8 +46,14 @@ class PopularWidget extends StatelessWidget {
             viewportFraction: 1,
           ),
           itemCount: popularList.length,
-          itemBuilder: (context, index, realIndex) =>
-              PopularItem(results: popularList[index]),
+          itemBuilder: (context, index, realIndex) => InkWell(
+            onTap: () async {
+              Navigator.of(context).pushNamed(MovieDetails.routeName,
+                  arguments: await ApiManager.getMovieDetails(
+                      popularList[index].id ?? 0));
+            },
+            child: PopularItem(results: popularList[index]),
+          ),
         );
       },
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/api_manager/api_manager.dart';
 import 'package:movie_app/model/PopularMovie.dart';
+import 'package:movie_app/screen/movie_details/movie_details.dart';
 import 'package:movie_app/shared/style/myColor.dart';
 
 class ReleaseItem extends StatelessWidget {
@@ -50,19 +51,26 @@ class ReleaseItem extends StatelessWidget {
                 var popularList = snapshot.data?.results ?? [];
                 return ListView.separated(
                   itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Stack(
-                        children: [
-                          Image.network(
-                            'https://image.tmdb.org/t/p/w600_and_h900_bestv2${popularList[index].posterPath}',
-                            fit: BoxFit.fitWidth,
-                          ),
-                          Image.asset('assets/images/bookmark.png'),
-                        ],
+                    return InkWell(
+                      onTap: () async {
+                        Navigator.of(context).pushNamed(MovieDetails.routeName,
+                            arguments: await ApiManager.getMovieDetails(
+                                popularList[index].id ?? 0));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Stack(
+                          children: [
+                            Image.network(
+                              'https://image.tmdb.org/t/p/w600_and_h900_bestv2${popularList[index].posterPath}',
+                              fit: BoxFit.fitWidth,
+                            ),
+                            Image.asset('assets/images/bookmark.png'),
+                          ],
+                        ),
                       ),
                     );
                   },

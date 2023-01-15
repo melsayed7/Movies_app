@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/api_manager/api_manager.dart';
 import 'package:movie_app/model/TopRatedMovie.dart';
+import 'package:movie_app/screen/movie_details/movie_details.dart';
 import 'package:movie_app/shared/style/myColor.dart';
 
 class RecomendedWidget extends StatelessWidget {
@@ -50,61 +51,71 @@ class RecomendedWidget extends StatelessWidget {
                 var topRatedList = snapshot.data?.results ?? [];
                 return ListView.separated(
                   itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xff343534),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Stack(
+                    return InkWell(
+                      onTap: () async {
+                        Navigator.of(context).pushNamed(MovieDetails.routeName,
+                            arguments: await ApiManager.getMovieDetails(
+                                topRatedList[index].id ?? 0));
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * .3,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xff343534),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Stack(
+                                children: [
+                                  Image.network(
+                                    'https://image.tmdb.org/t/p/w600_and_h900_bestv2${topRatedList[index].posterPath}',
+                                    fit: BoxFit.fill,
+                                    width:
+                                        MediaQuery.of(context).size.width * .3,
+                                  ),
+                                  Image.asset('assets/images/bookmark.png'),
+                                ],
+                              ),
+                            ),
+                            Row(
                               children: [
-                                Image.network(
-                                  'https://image.tmdb.org/t/p/w600_and_h900_bestv2${topRatedList[index].posterPath}',
-                                  fit: BoxFit.fill,
-                                  width: 90,
+                                Image.asset('assets/images/star.png'),
+                                const SizedBox(
+                                  width: 5,
                                 ),
-                                Image.asset('assets/images/bookmark.png'),
+                                Text(
+                                  '${topRatedList[index].voteAverage}',
+                                  style: TextStyle(
+                                    color: MyColor.whiteColor,
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
-                          Row(
-                            children: [
-                              Image.asset('assets/images/star.png'),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                '${topRatedList[index].voteAverage}',
-                                style: TextStyle(
-                                  color: MyColor.whiteColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 2,
-                          ),
-                          Text(
-                            '${topRatedList[index].title}',
-                            style: TextStyle(
-                                color: MyColor.whiteColor,
-                                overflow: TextOverflow.ellipsis),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(
-                            height: 2,
-                          ),
-                          Text(
-                            '${topRatedList[index].releaseDate}',
-                            style: const TextStyle(
-                              color: Color(0xffB5B4B4),
+                            const SizedBox(
+                              height: 2,
                             ),
-                          ),
-                        ],
+                            Text(
+                              '${topRatedList[index].title}',
+                              style: TextStyle(
+                                color: MyColor.whiteColor,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(
+                              height: 2,
+                            ),
+                            Text(
+                              '${topRatedList[index].releaseDate}',
+                              style: const TextStyle(
+                                color: Color(0xffB5B4B4),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
