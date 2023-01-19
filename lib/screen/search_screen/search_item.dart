@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/shared/style/myColor.dart';
 
-class SearchScreenItem extends StatelessWidget {
+class SearchItem extends StatelessWidget {
   String image;
 
   String title;
@@ -10,7 +10,7 @@ class SearchScreenItem extends StatelessWidget {
 
   String content;
 
-  SearchScreenItem({
+  SearchItem({
     required this.image,
     required this.title,
     required this.date,
@@ -23,8 +23,27 @@ class SearchScreenItem extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Image.network(
-                'https://image.tmdb.org/t/p/w600_and_h900_bestv2$image'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Stack(
+                children: [
+                  Image.network(
+                    'https://image.tmdb.org/t/p/w600_and_h900_bestv2$image',
+                    fit: BoxFit.cover,
+                    width: 200,
+                  ),
+                  Image.asset('assets/images/bookmark.png'),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
           ),
           Expanded(
             child: Column(

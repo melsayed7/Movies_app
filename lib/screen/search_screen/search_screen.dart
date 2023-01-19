@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/api_manager/api_manager.dart';
 import 'package:movie_app/model/SearchMovieModel.dart';
-import 'package:movie_app/screen/search_screen/search_screen_item.dart';
+import 'package:movie_app/screen/search_screen/search_item.dart';
 import 'package:movie_app/shared/style/myColor.dart';
+
+import '../movie_details/movie_details.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -19,22 +21,31 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding:
-              const EdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               TextFormField(
                 onChanged: (text) {
                   if (text.isNotEmpty) {
                     query = text;
-                    ApiManager.searchMovie(query);
+                    ApiManager.searchMovie(query).then((value) {
+                      results = value.results ?? [];
+                      setState(() {});
+                    });
+                  } else {
+                    results = [];
                     setState(() {});
                   }
                 },
                 onFieldSubmitted: (text) {
                   if (text.isNotEmpty) {
                     query = text;
-                    ApiManager.searchMovie(query);
+                    ApiManager.searchMovie(query).then((value) {
+                      results = value.results ?? [];
+                      setState(() {});
+                    });
+                  } else {
+                    results = [];
                     setState(() {});
                   }
                 },
@@ -43,8 +54,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 cursorColor: Colors.white,
                 decoration: InputDecoration(
-                    labelText: 'Search',
-                    labelStyle: const TextStyle(
+                    hintText: 'Search',
+                    hintStyle: const TextStyle(
                       color: Color(0xffFFFFFF),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -61,6 +72,23 @@ class _SearchScreenState extends State<SearchScreen> {
                     fillColor: const Color(0xff514F4F),
                     filled: true),
               ),
+              if (results.isEmpty)
+                Expanded(
+                  child: Column(
+                    children: [
+                      const Spacer(),
+                      Image.asset('assets/images/noMoviesFound.png'),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      Text(
+                        'No movies found',
+                        style: TextStyle(color: MyColor.whiteColor),
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                ),
               if (results.isNotEmpty)
                 Expanded(
                   child: FutureBuilder<SearchMovieModel>(
@@ -87,14 +115,22 @@ class _SearchScreenState extends State<SearchScreen> {
                         );
                       }
                       var searchList = snapshot.data?.results ?? [];
-                      results.addAll(searchList);
                       return ListView.separated(
                         itemBuilder: (context, index) {
-                          return SearchScreenItem(
-                            image: searchList[index].posterPath ?? '',
-                            title: searchList[index].title ?? '',
-                            date: searchList[index].releaseDate ?? '',
-                            content: searchList[index].overview ?? '',
+                          return InkWell(
+                            onTap: () async {
+                              Navigator.of(context).pushNamed(
+                                MovieDetails.routeName,
+                                arguments: await ApiManager.getMovieDetails(
+                                    searchList[index].id ?? 0),
+                              );
+                            },
+                            child: SearchItem(
+                              image: searchList[index].posterPath ?? '',
+                              title: searchList[index].title ?? '',
+                              date: searchList[index].releaseDate ?? '',
+                              content: searchList[index].overview ?? '',
+                            ),
                           );
                         },
                         itemCount: searchList.length,
@@ -104,17 +140,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     },
                   ),
                 ),
-              const Spacer(),
-              if (results.isEmpty)
-                Image.asset('assets/images/noMoviesFound.png'),
-              const SizedBox(
-                height: 7,
-              ),
-              Text(
-                'No movies found',
-                style: TextStyle(color: MyColor.whiteColor),
-              ),
-              const Spacer(),
             ],
           ),
         ),
