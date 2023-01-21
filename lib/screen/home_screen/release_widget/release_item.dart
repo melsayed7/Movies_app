@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/api_manager/api_manager.dart';
+import 'package:movie_app/firebase_utils/firebase_utils.dart';
 import 'package:movie_app/model/PopularMovie.dart';
+import 'package:movie_app/model/WatchListModel.dart';
 import 'package:movie_app/screen/movie_details/movie_details.dart';
 import 'package:movie_app/shared/style/myColor.dart';
 
 class ReleaseItem extends StatelessWidget {
+  bool isCheck = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -68,7 +72,21 @@ class ReleaseItem extends StatelessWidget {
                               'https://image.tmdb.org/t/p/w600_and_h900_bestv2${popularList[index].posterPath}',
                               fit: BoxFit.fitWidth,
                             ),
-                            Image.asset('assets/images/bookmark.png'),
+                            InkWell(
+                              onTap: () {
+                                var model = WatchListModel(
+                                    image: popularList[index].posterPath ?? '',
+                                    title: popularList[index].title ?? '',
+                                    content: popularList[index].overview ?? '',
+                                    date: popularList[index].releaseDate ?? '',
+                                    check: true);
+                                FirebaseUtils.addWatchListToFirebase(model);
+                              },
+                              child: isCheck == true
+                                  ? Image.asset(
+                                      'assets/images/bookmarkDone.png')
+                                  : Image.asset('assets/images/bookmark.png'),
+                            ),
                           ],
                         ),
                       ),

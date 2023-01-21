@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/screen/home_screen/release_widget/release_item.dart';
+
 import 'popular_widget/popular_widget.dart';
 import 'recomended_widget/recomended_widget.dart';
 
