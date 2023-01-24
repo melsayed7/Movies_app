@@ -75,11 +75,12 @@ class ReleaseItem extends StatelessWidget {
                             InkWell(
                               onTap: () {
                                 var model = WatchListModel(
-                                    image: popularList[index].posterPath ?? '',
-                                    title: popularList[index].title ?? '',
-                                    content: popularList[index].overview ?? '',
-                                    date: popularList[index].releaseDate ?? '',
-                                    check: true);
+                                  image: popularList[index].posterPath ?? '',
+                                  title: popularList[index].title ?? '',
+                                  content: popularList[index].overview ?? '',
+                                  date: popularList[index].releaseDate ?? '',
+                                );
+                                //popularList.contains(model);
                                 FirebaseUtils.addWatchListToFirebase(model);
                               },
                               child: isCheck == true

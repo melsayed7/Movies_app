@@ -27,6 +27,7 @@ class WatchListScreen extends StatelessWidget {
           }
           var watchList =
               snapshot.data?.docs.map((e) => e.data()).toList() ?? [];
+
           return ListView.separated(
             separatorBuilder: (context, index) =>
                 Divider(color: MyColor.greyColor, thickness: 1),
