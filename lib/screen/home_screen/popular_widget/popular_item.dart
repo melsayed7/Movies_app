@@ -40,11 +40,11 @@ class PopularItem extends StatelessWidget {
                       child: Image.network(
                           'https://image.tmdb.org/t/p/w600_and_h900_bestv2${results.posterPath}'),
                     ),
-                    Positioned(
+                    /*Positioned(
                       top: screenSize.height * .14,
                       left: screenSize.width * .001,
                       child: Image.asset('assets/images/bookmark.png'),
-                    ),
+                    ),*/
                   ],
                 ),
               ),

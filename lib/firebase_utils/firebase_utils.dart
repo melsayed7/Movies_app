@@ -14,8 +14,7 @@ class FirebaseUtils {
 
   static Future<void> addWatchListToFirebase(WatchListModel model) {
     var collection = getWatchListCollectionRef();
-    var docRef = collection.doc();
-    model.id = docRef.id;
+    var docRef = collection.doc(model.id.toString());
     return docRef.set(model);
   }
 
@@ -23,7 +22,13 @@ class FirebaseUtils {
     return getWatchListCollectionRef().snapshots();
   }
 
-  static Future<void> deleteWatchListFromFirebase(WatchListModel model) async {
-    return await getWatchListCollectionRef().doc(model.id).delete();
+  static Future<void> deleteWatchListFromFirebase(int movieId) async {
+    return await getWatchListCollectionRef().doc(movieId.toString()).delete();
+  }
+
+  static Future<bool> isInWatchList(int id) async {
+    var querySnapShot = await getWatchListCollectionRef().get();
+    var movieIDList = querySnapShot.docs.map((e) => e.data().id).toList();
+    return movieIDList.contains(id);
   }
 }

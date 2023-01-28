@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/api_manager/api_manager.dart';
-import 'package:movie_app/model/TopRatedMovie.dart';
-import 'package:movie_app/screen/home_screen/recomended_widget/recomended_item.dart';
+import 'package:movie_app/model/PopularMovie.dart';
+import 'package:movie_app/screen/home_screen/release_widget/release_item.dart';
 import 'package:movie_app/shared/style/myColor.dart';
 
-class RecomendedWidget extends StatelessWidget {
+class ReleaseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -14,7 +14,7 @@ class RecomendedWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Recommended',
+            'New Releases',
             style: TextStyle(
               color: MyColor.whiteColor,
               fontSize: 15,
@@ -25,8 +25,8 @@ class RecomendedWidget extends StatelessWidget {
             height: 10,
           ),
           Expanded(
-            child: FutureBuilder<TopRatedMovie>(
-              future: ApiManager.getTopRatedMovie(),
+            child: FutureBuilder<PopularMovie>(
+              future: ApiManager.getPopularMovie(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -48,12 +48,12 @@ class RecomendedWidget extends StatelessWidget {
                     ),
                   );
                 }
-                var topRatedList = snapshot.data?.results ?? [];
+                var popularList = snapshot.data?.results ?? [];
                 return ListView.separated(
                   itemBuilder: (context, index) {
-                    return RecomendedItem(result: topRatedList[index]);
+                    return ReleaseItem(result: popularList[index]);
                   },
-                  itemCount: topRatedList.length,
+                  itemCount: popularList.length,
                   scrollDirection: Axis.horizontal,
                   separatorBuilder: (context, index) {
                     return const SizedBox(

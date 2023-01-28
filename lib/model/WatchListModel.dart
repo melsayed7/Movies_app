@@ -1,5 +1,5 @@
 class WatchListModel {
-  String id;
+  int id;
 
   String image;
 
@@ -12,17 +12,17 @@ class WatchListModel {
   bool check;
 
   WatchListModel({
-    this.id = '',
+    required this.id,
     required this.image,
     required this.title,
     required this.content,
     required this.date,
-    this.check = false,
+    required this.check,
   });
 
   WatchListModel.fromJson(Map<String, dynamic> json)
       : this(
-          id: json['id'] as String,
+    id: json['id'] as int,
           image: json['image'] as String,
           title: json['title'] as String,
           content: json['content'] as String,

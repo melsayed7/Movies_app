@@ -25,6 +25,11 @@ class WatchListScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             const Center(child: CircularProgressIndicator());
           }
+          if (snapshot.hasError) {
+            print('${snapshot.error.toString()}');
+            return SizedBox();
+          }
+          print('${snapshot.data?.docs.length}');
           var watchList =
               snapshot.data?.docs.map((e) => e.data()).toList() ?? [];
 

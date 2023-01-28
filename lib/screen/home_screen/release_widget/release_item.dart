@@ -4,107 +4,72 @@ import 'package:movie_app/firebase_utils/firebase_utils.dart';
 import 'package:movie_app/model/PopularMovie.dart';
 import 'package:movie_app/model/WatchListModel.dart';
 import 'package:movie_app/screen/movie_details/movie_details.dart';
-import 'package:movie_app/shared/style/myColor.dart';
 
-class ReleaseItem extends StatelessWidget {
-  bool isCheck = false;
+class ReleaseItem extends StatefulWidget {
+  Results result;
+
+  ReleaseItem({required this.result});
+
+  @override
+  State<ReleaseItem> createState() => _ItemState();
+}
+
+class _ItemState extends State<ReleaseItem> {
+  late WatchListModel model;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      var isExist = await FirebaseUtils.isInWatchList(widget.result.id!);
+      model.check = isExist;
+      setState(() {});
+    });
+
+    model = WatchListModel(
+      id: widget.result.id ?? 0,
+      image: widget.result.posterPath ?? '',
+      title: widget.result.title ?? '',
+      content: widget.result.overview ?? '',
+      date: widget.result.releaseDate ?? '',
+      check: false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: MyColor.containerColor,
-      padding: const EdgeInsets.all(15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'New Releases',
-            style: TextStyle(
-              color: MyColor.whiteColor,
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
+    return InkWell(
+      onTap: () async {
+        Navigator.of(context).pushNamed(MovieDetails.routeName,
+            arguments: await ApiManager.getMovieDetails(widget.result.id ?? 0));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          children: [
+            Image.network(
+              'https://image.tmdb.org/t/p/w600_and_h900_bestv2${widget.result.posterPath}',
+              fit: BoxFit.fitWidth,
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: FutureBuilder<PopularMovie>(
-              future: ApiManager.getPopularMovie(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: MyColor.yellowColor,
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Column(
-                      children: [
-                        Text(snapshot.error.toString()),
-                        ElevatedButton(
-                            onPressed: () {
-                              ApiManager.getPopularMovie();
-                            },
-                            child: const Text('Try Again'))
-                      ],
-                    ),
-                  );
+            InkWell(
+              onTap: () {
+                if (model.check) {
+                  FirebaseUtils.deleteWatchListFromFirebase(model.id);
+                } else {
+                  FirebaseUtils.addWatchListToFirebase(model);
                 }
-                var popularList = snapshot.data?.results ?? [];
-                return ListView.separated(
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () async {
-                        Navigator.of(context).pushNamed(MovieDetails.routeName,
-                            arguments: await ApiManager.getMovieDetails(
-                                popularList[index].id ?? 0));
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Stack(
-                          children: [
-                            Image.network(
-                              'https://image.tmdb.org/t/p/w600_and_h900_bestv2${popularList[index].posterPath}',
-                              fit: BoxFit.fitWidth,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                var model = WatchListModel(
-                                  image: popularList[index].posterPath ?? '',
-                                  title: popularList[index].title ?? '',
-                                  content: popularList[index].overview ?? '',
-                                  date: popularList[index].releaseDate ?? '',
-                                );
-                                //popularList.contains(model);
-                                FirebaseUtils.addWatchListToFirebase(model);
-                              },
-                              child: isCheck == true
-                                  ? Image.asset(
-                                      'assets/images/bookmarkDone.png')
-                                  : Image.asset('assets/images/bookmark.png'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  itemCount: popularList.length,
-                  scrollDirection: Axis.horizontal,
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(
-                      width: 8,
-                    );
-                  },
-                );
+                model.check = !model.check;
+                setState(() {});
               },
+              child: model.check == true
+                  ? Image.asset('assets/images/bookmarkDone.png')
+                  : Image.asset('assets/images/bookmark.png'),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

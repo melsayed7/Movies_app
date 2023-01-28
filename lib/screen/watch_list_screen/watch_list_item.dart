@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/firebase_utils/firebase_utils.dart';
-import 'package:movie_app/model/WatchListModel.dart';
 import 'package:movie_app/shared/style/myColor.dart';
 
 class WatchListItem extends StatelessWidget {
-  String id;
+  int id;
 
   String image;
 
@@ -46,14 +45,7 @@ class WatchListItem extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        var model = WatchListModel(
-                          id: id,
-                          image: image,
-                          title: title,
-                          content: content,
-                          date: date,
-                        );
-                        FirebaseUtils.deleteWatchListFromFirebase(model);
+                        FirebaseUtils.deleteWatchListFromFirebase(id);
                       },
                       child: Image.asset('assets/images/bookmarkDone.png'),
                     ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/screen/home_screen/release_widget/release_item.dart';
+import 'package:movie_app/screen/home_screen/release_widget/release_widget.dart';
 
 import 'popular_widget/popular_widget.dart';
 import 'recomended_widget/recomended_widget.dart';
@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
         ),
         Expanded(
           flex: 3,
-          child: ReleaseItem(),
+          child: ReleaseWidget(),
         ),
         const SizedBox(
           height: 10,
