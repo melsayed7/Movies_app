@@ -9,5 +9,7 @@ class MyColor {
 
   static Color greyColor = Color(0xffC6C6C6);
 
-  static Color bottomNavBarColor = Color(0xff707070);
+  static Color containerColor = Color(0xff282A28);
+
+  static Color bottomNavBarColor = Color(0xff1A1A1A);
 }
